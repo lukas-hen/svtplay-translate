@@ -1,0 +1,5 @@
+examples
+tmp/*
+multimedia/*
+subtitles/*
+.DS_Store
