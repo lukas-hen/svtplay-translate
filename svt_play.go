@@ -45,15 +45,16 @@ func RunUrlFetchingFlow() {
 
 	videos := make([]string, len(allVideoObjects))
 	for idx, video := range allVideoObjects {
-		videos[idx] = video.Resolve
+		videos[idx] = video.Url
 	}
+
+	selectedVideo := PromptUserDecision[string](videos, "Select which streaming protocol to get:")
 
 	subtitles := make([]string, len(allSubtitleObjects))
 	for idx, subtitle := range allSubtitleObjects {
 		subtitles[idx] = subtitle.Url
 	}
 
-	selectedVideo := PromptUserDecision[string](videos, "Select which streaming protocol to get:")
 	selectedSubtitle := PromptUserDecision[string](subtitles, "Select which subtitles to get:")
 
 	// For future container purposes these should be set in the env.
@@ -61,8 +62,8 @@ func RunUrlFetchingFlow() {
 	err := os.MkdirAll(tmp_path, os.ModePerm)
 	check(err)
 
-	videoPath := tmp_path + "/video-" + time.Now().Format(time.RFC3339)
-	subtitlePath := tmp_path + "/subtitle-" + time.Now().Format(time.RFC3339)
+	videoPath := tmp_path + "/video-" + time.Now().Format(time.RFC3339) + ".txt"
+	subtitlePath := tmp_path + "/subtitle-" + time.Now().Format(time.RFC3339) + ".txt"
 
 	log.Printf("Writing video url to: %s\n", videoPath)
 	err = os.WriteFile(videoPath, []byte(selectedVideo+"\n"), os.ModeAppend)
