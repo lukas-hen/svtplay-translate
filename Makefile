@@ -1,5 +1,5 @@
-run:
-	go run main.go svt_play.go utils.go cli.go server.go
+build:
+	go build -o out *.go
 
 clean:
-	rm -r ./tmp/*
+	rm out

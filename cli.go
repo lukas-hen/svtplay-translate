@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-func PromptUserDecision[T comparable](opts []T, prompt string) T {
+func PromptUserDecision[T string](opts []T, prompt string) T {
 
 	fmt.Println(prompt)
 
