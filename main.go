@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"sync"
+
+	"github.com/lukas-hen/svtplay-translate/vtt"
 )
 
 func main() {
@@ -38,35 +41,30 @@ func handleEpisodes() {
 
 func handleTranslate(subtitlePath string) {
 
-	// 10 req per sec
-	rl := NewRateLimiter(5)
+	v := vtt.ParseFile(subtitlePath)
+	cues := v.Cues
+	translate_n := len(cues)
 
-	rl.Run()
+	translatedBuf := make([]string, translate_n)
 
-	req_id := 1
-	for {
-		if req_id > 20 {
-			break
-		}
-		req := "Req: " + strconv.Itoa(req_id)
-		rl.Send(req)
-		req_id++
+	var wg sync.WaitGroup
+
+	for i := 0; i < translate_n; i++ {
+		wg.Add(1)
+		go Translate(cues[i].TextWithoutTags(), translatedBuf, i, &wg)
 	}
-	rl.Wait()
 
-	//v := vtt.ParseFile(subtitlePath)
-	//cues := v.Cues
-	// strbuf := ""
+	wg.Wait()
 
-	// // Translate one chunk of 5 cues.
-	// for i := 0; i < 5; i++ {
-	// 	strbuf += cues[i].TextWithoutTags() + "\n\n"
-	// }
+	for idx, s := range translatedBuf {
+		c := vtt.Cue{
+			Id:      strconv.Itoa(idx),
+			Timings: cues[idx].Timings,
+			Text:    s,
+		}
 
-	// res := Translate(strbuf)
-
-	// fmt.Println(res)
-	//v.WriteSrtFile("./subtitles.srt")
+		c.WriteToSRTFile("./subtitle.srt")
+	}
 
 }
 

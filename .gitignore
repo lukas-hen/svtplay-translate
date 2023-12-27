@@ -3,3 +3,6 @@ tmp/*
 multimedia/*
 subtitles/*
 .DS_Store
+.env
+out
+subtitle.*

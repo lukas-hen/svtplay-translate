@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"strings"
 )
@@ -405,6 +406,21 @@ func (c *Cue) TextWithoutTags() string {
 	}
 
 	return buf.String()
+}
+
+func (c *Cue) WriteToSRTFile(path string) error {
+	f, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Println(err)
+	}
+	defer f.Close()
+
+	if _, err := f.WriteString(fmt.Sprintf("%s\n%s\n%s\n\n", c.Id, c.Timings.String(), c.Text)); err != nil {
+		log.Println(err)
+		return err
+	}
+
+	return nil
 }
 
 type Note struct {
