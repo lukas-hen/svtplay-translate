@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strconv"
 	"strings"
 )
 
@@ -351,10 +350,11 @@ type WebVTT struct {
 func (webvtt *WebVTT) WriteSRT(w io.Writer) error {
 	all_subs := webvtt.Cues
 	for i := 0; i < len(all_subs); i++ {
-		n := strconv.Itoa(i + 1)
-		dur := all_subs[i].Timings.String()
+		//n := strconv.Itoa(i + 1)
+		//dur := all_subs[i].Timings.String()
 		sub := all_subs[i].TextWithoutTags()
-		full_str := n + "\n" + dur + "\n" + sub + "\n\n"
+		//full_str := n + "\n" + dur + "\n" + sub + "\n\n"
+		full_str := sub + "\n\n"
 
 		_, err := w.Write([]byte(full_str))
 		if err != nil {

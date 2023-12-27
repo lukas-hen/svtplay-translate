@@ -1,0 +1,3 @@
+ffmpeg -i http://ed2.cdn.svt.se/d0/world/20231214/f4541d53-0496-4c45-928b-64c3f4184044/dash-full.mpd -codec copy out.mp4
+
+ffplay -vf subtitles=filename=[SUBTITLE_FILE].srt [VIDEO_FILE]

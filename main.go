@@ -3,8 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
-
-	"github.com/lukas-hen/svtplay-translate/vtt"
+	"strconv"
 )
 
 func main() {
@@ -13,7 +12,7 @@ func main() {
 	n_args := len(argsWoProg)
 	expected_args := "episodes|translate|serve"
 
-	if n_args > 1 || n_args == 0 {
+	if n_args == 0 {
 		fmt.Printf("Invalid number of args passed (%d). Expected %s\n", n_args, expected_args)
 		os.Exit(1)
 	}
@@ -24,7 +23,8 @@ func main() {
 	case "episodes":
 		handleEpisodes()
 	case "translate":
-		handleTranslate()
+		subtitlePath := argsWoProg[1]
+		handleTranslate(subtitlePath)
 	case "serve":
 		handleServe()
 	default:
@@ -36,17 +36,38 @@ func handleEpisodes() {
 	RunUrlFetchingFlow()
 }
 
-func handleTranslate() {
-	v := vtt.ParseFile("./subtitles.vtt")
-	cues := v.Cues
-	for _, c := range cues {
-		c.Text = c.Text + "123"
-	}
+func handleTranslate(subtitlePath string) {
 
-	err := v.WriteSrtFile("./subtitles.srt")
-	if err != nil {
-		panic(err)
+	// 10 req per sec
+	rl := NewRateLimiter(5)
+
+	rl.Run()
+
+	req_id := 1
+	for {
+		if req_id > 20 {
+			break
+		}
+		req := "Req: " + strconv.Itoa(req_id)
+		rl.Send(req)
+		req_id++
 	}
+	rl.Wait()
+
+	//v := vtt.ParseFile(subtitlePath)
+	//cues := v.Cues
+	// strbuf := ""
+
+	// // Translate one chunk of 5 cues.
+	// for i := 0; i < 5; i++ {
+	// 	strbuf += cues[i].TextWithoutTags() + "\n\n"
+	// }
+
+	// res := Translate(strbuf)
+
+	// fmt.Println(res)
+	//v.WriteSrtFile("./subtitles.srt")
+
 }
 
 func handleServe() {
