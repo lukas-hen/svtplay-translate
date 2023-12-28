@@ -1,9 +1,22 @@
-package main
+package utils
 
 import (
 	"fmt"
 	"strconv"
 )
+
+func GetKeysFromMap[A comparable, B any](some_map map[A]B) []A {
+
+	out := make([]A, len(some_map))
+
+	i := 0
+	for k := range some_map {
+		out[i] = k
+		i++
+	}
+
+	return out
+}
 
 func PromptUserDecision[T string](opts []T, prompt string) T {
 
@@ -26,4 +39,10 @@ func PromptUserDecision[T string](opts []T, prompt string) T {
 	}
 
 	return opts[intChoice]
+}
+
+func check(err error) {
+	if err != nil {
+		panic(err)
+	}
 }

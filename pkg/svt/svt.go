@@ -1,4 +1,4 @@
-package main
+package svt
 
 import (
 	"encoding/json"
@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/gocolly/colly"
+	"github.com/lukas-hen/svtplay-translate/internal/utils"
 )
 
 // Writes fetched urls into a target file /
@@ -25,8 +26,8 @@ func RunUrlFetchingFlow() {
 
 	// Start of control flow
 	episodes := CrawlPSEpisodes()
-	episode_urls := GetKeysFromMap[string, bool](episodes)
-	chosen_url := PromptUserDecision[string](episode_urls, "Which episode do you want to translate?")
+	episode_urls := utils.GetKeysFromMap[string, bool](episodes)
+	chosen_url := utils.PromptUserDecision[string](episode_urls, "Which episode do you want to translate?")
 
 	// Path has lots of junk. E.g /video/eXYgnwk/pa-sparet/fre-3-nov-20-00?id=Kw74Q4o
 	// We only need /video/<id> for the api.
@@ -48,14 +49,14 @@ func RunUrlFetchingFlow() {
 		videos[idx] = video.Url
 	}
 
-	selectedVideo := PromptUserDecision[string](videos, "Select which streaming protocol to get:")
+	selectedVideo := utils.PromptUserDecision[string](videos, "Select which streaming protocol to get:")
 
 	subtitles := make([]string, len(allSubtitleObjects))
 	for idx, subtitle := range allSubtitleObjects {
 		subtitles[idx] = subtitle.Url
 	}
 
-	selectedSubtitle := PromptUserDecision[string](subtitles, "Select which subtitles to get:")
+	selectedSubtitle := utils.PromptUserDecision[string](subtitles, "Select which subtitles to get:")
 
 	// For future container purposes these should be set in the env.
 	tmp_path := filepath.Join(".", "tmp")
@@ -143,4 +144,10 @@ type SubtitleReference struct {
 	Format       string `json:format`
 	Language     string `json:language`
 	LanguageName string `json:languageName`
+}
+
+func check(err error) {
+	if err != nil {
+		panic(err)
+	}
 }

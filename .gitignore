@@ -1,8 +1,7 @@
-examples
+bin/svt*
 tmp/*
-multimedia/*
 subtitles/*
 .DS_Store
 .env
-out
+out*
 subtitle.*

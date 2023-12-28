@@ -1,5 +1,5 @@
 build:
-	go build -o out *.go
+	go build -o bin ./...
 
 clean:
 	rm out
