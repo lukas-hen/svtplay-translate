@@ -1,6 +1,6 @@
 bin/svt*
 tmp/urls
-tmp/.url
+tmp/video.url
 .DS_Store
 .env
 *.mp4
