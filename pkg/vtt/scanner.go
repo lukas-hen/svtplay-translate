@@ -140,7 +140,7 @@ func (s *Scanner) Scan() (Token, string, error) {
 			return NIL, "", err
 		}
 
-		return NIL, string(r), fmt.Errorf("TODO, ILLEGAL CHAR: %s", string(r))
+		return NIL, string(r), fmt.Errorf("found illegal rune: %s", string(r))
 	}
 
 }
@@ -238,7 +238,7 @@ func (s *Scanner) PeekTokenType() (Token, error) {
 		// or a number, but also not a reserved/illegal symbol.
 		return LEG_SYMBOL, nil
 	default:
-		return NIL, fmt.Errorf("TODO, ILLEGAL CHAR: %s", string(ch))
+		return NIL, fmt.Errorf("found illegar rune: %s", string(ch))
 	}
 }
 
@@ -272,7 +272,7 @@ func (s *Scanner) scanExact(ident string) (string, error) {
 		} else if err != nil {
 			return "", err
 		} else if ident_ch != ch {
-			return "", fmt.Errorf("TODO")
+			return "", fmt.Errorf("couldn't scan exact identifier: %s. Found \"%c\", expected \"%c\"", ident, ch, ident_ch)
 		} else {
 			buf.WriteRune(ch)
 		}

@@ -275,7 +275,7 @@ func (p *Parser) parseTimestamp() (string, bool, error) {
 		}
 	} else {
 		// Non technical parsing error.
-		return tmp, false, fmt.Errorf("TODO! Timestamp parse error")
+		return tmp, false, fmt.Errorf("could not parse timestamp")
 	}
 	return tmp, true, nil
 }
@@ -302,7 +302,7 @@ func (p *Parser) stringUntil(delim Token, validToken func(Token) bool) (string, 
 		if err != nil {
 			return "", err
 		} else if !validToken(tok) {
-			return "", fmt.Errorf("found illegal token [%s: %s] at ..TODO..", StringFromToken(tok), str)
+			return "", fmt.Errorf("found illegal token [%s], expected [%s]", StringFromToken(tok), str)
 		} else if tok == delim {
 			break
 		} else {

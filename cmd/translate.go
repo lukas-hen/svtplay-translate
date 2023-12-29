@@ -29,6 +29,8 @@ var translateCmd = &cobra.Command{
 
 		translator := translation.NewOpenaiTranslator(openaiApiKey, "Swedish", "English")
 
+		log.Printf("Starting translation of %d cues.", translateN)
+
 		// Pre-allocate buffer. One goroutine will write to one index.
 		// Since only one goroutine operates on one index this should be memory safe.
 		translatedBuf := make([]string, translateN)

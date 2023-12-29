@@ -8,6 +8,7 @@ import (
 
 // Transcodes video but allows passing subtitles to burn them in during the
 // downloading/encoding, otherwise ffmpeg has to go through the entire video twice.
+// Just a wrapper, requires ffmpeg installation.
 func TranscodeWithSubs(dstPath string, srcPath string, videoEncoder string, subtitlePath string) {
 
 	// srcPath can also be a url. I.e to a dash manifest.
@@ -28,6 +29,7 @@ func TranscodeWithSubs(dstPath string, srcPath string, videoEncoder string, subt
 
 // Wrapper for the ffmpeg shell command. Transcodes video stream and copies the other streams to a local multimedia container.
 // srcPath can be a url or a filepath, if passed a manifest it will be resolved.
+// Just a wrapper, requires ffmpeg installation.
 func Transcode(dstPath string, srcPath string, videoEncoder string) {
 
 	// srcPath can also be a url. I.e to a dash manifest.

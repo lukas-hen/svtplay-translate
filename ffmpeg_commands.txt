@@ -1,6 +1,0 @@
-ffmpeg -i http://svt-vod-2i.akamaized.net/d0/world/20231214/9df1f90c-0929-4df4-91c1-7a93fd668215/dash-full.mpd -codec copy out.mp4
-
-ffmpeg -i out.mp4 -vf subtitles=subtitle.srt out_subs.mp4
-
-ffplay -vf subtitles=filename=[SUBTITLE_FILE].srt [VIDEO_FILE]
-

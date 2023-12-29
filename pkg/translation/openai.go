@@ -35,7 +35,7 @@ func (t *OpenaiTranslator) Translate(input string) (string, error) {
 
 	client := openai.NewClient(t.apiKey)
 
-	// Openai has rate limits.
+	// Openai has rate limiting.
 	// Easy crude way to hande this is with an exponential backoff.
 	// Keep retrying with the backoff if status is 429 - rate limit reached.
 
@@ -62,6 +62,7 @@ func (t *OpenaiTranslator) Translate(input string) (string, error) {
 				},
 			},
 		)
+
 		if isRateLimitErr(err) {
 			return err
 		} else {
