@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/lukas-hen/svtplay-translate/pkg/svt"
+	"github.com/lukas-hen/svtplay-translate/internal/svt"
 	"github.com/spf13/cobra"
 )
 

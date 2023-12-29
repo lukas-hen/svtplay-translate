@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/lukas-hen/svtplay-translate/internal/ffmpeg"
+	"github.com/lukas-hen/svtplay-translate/pkg/ffmpeg"
 	"github.com/spf13/cobra"
 )
 
