@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"strings"
 )
@@ -38,7 +37,7 @@ func (p *Parser) Parse() *WebVTT {
 		panic(err)
 	}
 
-	var allNotes []Note
+	var allNotes []string
 	var allCues []*Cue
 
 	for {
@@ -60,7 +59,7 @@ func (p *Parser) Parse() *WebVTT {
 			if err != nil {
 				panic(err)
 			}
-			allNotes = append(allNotes, Note{Text: str})
+			allNotes = append(allNotes, str)
 		default:
 			cue, err := p.parseCue()
 			if err != nil {
@@ -341,13 +340,6 @@ func isValidIdToken(tok Token) bool {
 	return tok != RARROW // All tokens valid
 }
 
-type WebVTT struct {
-	Header string
-	//Style  VTTStyle // Don't parse this for now.
-	Notes []Note
-	Cues  []*Cue
-}
-
 func (webvtt *WebVTT) WriteSRT(w io.Writer) error {
 	all_subs := webvtt.Cues
 	for i := 0; i < len(all_subs); i++ {
@@ -380,13 +372,6 @@ func (webvtt *WebVTT) WriteSrtFile(path string) error {
 	return nil
 }
 
-type Cue struct {
-	Id      string
-	Timings Timings
-	Styling Stylings
-	Text    string
-}
-
 func (c *Cue) TextWithoutTags() string {
 	s := bufio.NewScanner(strings.NewReader(c.Text))
 	s.Split(bufio.ScanRunes)
@@ -408,33 +393,31 @@ func (c *Cue) TextWithoutTags() string {
 	return buf.String()
 }
 
-func (c *Cue) WriteToSRTFile(path string) error {
-	f, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		log.Println(err)
-	}
-	defer f.Close()
-
-	if _, err := f.WriteString(fmt.Sprintf("%s\n%s\n%s\n\n", c.Id, c.Timings.String(), c.Text)); err != nil {
-		log.Println(err)
-		return err
-	}
-
-	return nil
+func (c *Cue) ToSRT() string {
+	return fmt.Sprintf("%s\n%s\n%s\n\n", c.Id, c.Timings.String(), c.Text)
 }
 
-type Note struct {
-	Text string
-	//Line int // Could be relevant
+func (ti *Timings) String() string {
+	return ti.From + " --> " + ti.To
+}
+
+type WebVTT struct {
+	Header string
+	//Style  VTTStyle // Don't parse this for now.
+	Notes []string
+	Cues  []*Cue
+}
+
+type Cue struct {
+	Id      string
+	Timings Timings
+	Styling Stylings
+	Text    string
 }
 
 type Timings struct {
 	From string
 	To   string
-}
-
-func (ti *Timings) String() string {
-	return ti.From + " --> " + ti.To
 }
 
 type Stylings struct {
