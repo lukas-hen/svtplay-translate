@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -26,7 +27,6 @@ var translateCmd = &cobra.Command{
 		webvtt := vtt.ParseFile(src)
 		cues := webvtt.Cues
 		translateN := len(cues)
-
 		translator := translation.NewOpenaiTranslator(openaiApiKey, "Swedish", "English")
 
 		log.Printf("Starting translation of %d cues.", translateN)
@@ -41,10 +41,10 @@ var translateCmd = &cobra.Command{
 			wg.Add(1)
 			go func(n int) {
 				defer wg.Done()
-
 				s, err := translator.Translate(cues[n].TextWithoutTags())
+				fmt.Printf("Translated subtitle no: %d\n", n)
 				if err != nil {
-					log.Printf("Non rate-limiting error translating. Err: %s", err)
+					log.Printf("Non rate-limiting error translating. Err: %s\n", err)
 					return
 				}
 

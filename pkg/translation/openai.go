@@ -17,9 +17,10 @@ type OpenaiTranslator struct {
 // Initialises
 func NewOpenaiTranslator(apiKey string, fromLang string, toLang string) *OpenaiTranslator {
 
-	prompt := fmt.Sprintf(`You are a %s to %s translator app. 
-	Translate any messages from %s to %s. 
-	Make it sound as natural as possible and make sure to keep the newline formatting intact.`, fromLang, toLang, fromLang, toLang)
+	prompt := fmt.Sprintf(`You are a %s to %s video subtitle translator app. 
+	Translate any subtitles from %s to %s. 
+	Keep the newline formatting intact and avoid adding extra hyphens that are not in the original content.
+	If something is already in english, don't translate it but just repeat it back.`, fromLang, toLang, fromLang, toLang)
 
 	return &OpenaiTranslator{
 		apiKey,
@@ -48,7 +49,7 @@ func (t *OpenaiTranslator) Translate(input string) (string, error) {
 		res, err := client.CreateChatCompletion(
 			context.Background(),
 			openai.ChatCompletionRequest{
-				Model:     openai.GPT4,
+				Model:     openai.GPT4o,
 				MaxTokens: getMaxTokens(input),
 				Messages: []openai.ChatCompletionMessage{
 					{
@@ -64,6 +65,7 @@ func (t *OpenaiTranslator) Translate(input string) (string, error) {
 		)
 
 		if isRateLimitErr(err) {
+			fmt.Println("Hit ratelimit:", err)
 			return err
 		} else {
 			success_res = res
@@ -77,16 +79,22 @@ func (t *OpenaiTranslator) Translate(input string) (string, error) {
 		return "", err
 	}
 
+	if len(success_res.Choices) > 0 {
+		return success_res.Choices[0].Message.Content, nil
+	} else {
+		return "SUB_MISSING", nil
+	}
+
 	return success_res.Choices[0].Message.Content, nil
 }
 
 func getMaxTokens(text string) int {
 
 	// 1 token is roughly 4 chars in english.
-	// Wan't some margin on the output - lets say 30% extra.
+	// Wan't some margin on the output - lets say 50% extra.
 	// Always do at least 10.
 
-	return max(int((float64(len(text))/4.0)*1.3), 10)
+	return max(int((float64(len(text))/4.0)*1.5), 10)
 }
 
 func isRateLimitErr(openaierr error) bool {

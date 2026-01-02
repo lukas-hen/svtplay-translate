@@ -42,6 +42,7 @@ func (p *Parser) Parse() *WebVTT {
 
 	for {
 		tok, err := p.s.PeekTokenType()
+
 		if err == io.EOF {
 			break
 		} else if err != nil {
@@ -63,7 +64,7 @@ func (p *Parser) Parse() *WebVTT {
 		default:
 			cue, err := p.parseCue()
 			if err != nil {
-				panic(err)
+				break // Temp fix
 			}
 			allCues = append(allCues, cue)
 		}
